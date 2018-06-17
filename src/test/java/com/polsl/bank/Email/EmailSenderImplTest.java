@@ -1,6 +1,5 @@
 package com.polsl.bank.Email;
 
-import com.polsl.bank.domain.BankAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +11,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.MimeMessage;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

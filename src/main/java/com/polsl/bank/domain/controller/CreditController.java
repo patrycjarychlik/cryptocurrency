@@ -5,10 +5,13 @@ import com.polsl.bank.domain.Credit;
 import com.polsl.bank.domain.Interest;
 import com.polsl.bank.domain.Model.CreditRequest;
 import com.polsl.bank.domain.Model.CreditResponse;
+import com.polsl.bank.domain.User;
 import com.polsl.bank.domain.service.UserService;
+import com.polsl.bank.exceptions.NoInterestSetException;
 import com.polsl.bank.repository.AccountRepository;
 import com.polsl.bank.repository.CreditRepository;
 import com.polsl.bank.repository.InterestRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,17 +27,23 @@ import java.util.stream.Collectors;
 public class CreditController {
 
     public static final String CREDIT = "credit";
-    @Autowired
+
     private CreditRepository creditRepository;
 
-    @Autowired
     private InterestRepository interestRepository;
 
-    @Autowired
     private AccountRepository accountRepository;
 
+    private UserService userService;
+
     @Autowired
-    UserService userService;
+    public CreditController(CreditRepository creditRepository, InterestRepository interestRepository, AccountRepository accountRepository, UserService userService) {
+        this.creditRepository = creditRepository;
+        this.interestRepository = interestRepository;
+        this.accountRepository = accountRepository;
+        this.userService = userService;
+    }
+
 
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
@@ -48,7 +57,7 @@ public class CreditController {
     @ResponseStatus(value = HttpStatus.OK)
     public CreditResponse takeCredit(@RequestBody CreditRequest creditRequest) throws Exception {
 
-        Interest creditPercent = Optional.ofNullable(interestRepository.findOneByName(CREDIT)).orElseThrow(() -> new Exception("No credit interest set."));
+        Interest creditPercent = Optional.ofNullable(interestRepository.findOneByName(CREDIT)).orElseThrow(() -> new NoInterestSetException("credit"));
 
         Credit credit = Credit.builder()
                 .dueDate(creditRequest.getDueDate())
@@ -64,8 +73,10 @@ public class CreditController {
 
     @PostMapping(path = "/pay")
     @ResponseStatus(value = HttpStatus.OK)
-    public CreditResponse payForCredit(@RequestParam double amount, long creditId) throws ValidationException {
-        BankAccount account = accountRepository.findOneByUser_Id(userService.getUser(SecurityContextHolder.getContext()).getId());
+    public CreditResponse payForCredit(@RequestParam double amount, long creditId) throws ValidationException, NotFoundException {
+        User user = userService.getUser(SecurityContextHolder.getContext());
+        BankAccount account = Optional.ofNullable(accountRepository.findOne(user.getId())).orElseThrow(() -> new NotFoundException("account not found"));
+
         if (amount > 0 && account.getBalance() >= amount) {
 
             account.setBalance(account.getBalance() - amount);
