@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 
 @Entity
@@ -29,7 +28,7 @@ public class BankAccount implements Serializable {
 
     private String number;
 
-    private BigDecimal balance;
+    private Double balance;
 
 //    private Set<Transaction> sources = new HashSet<>();
 

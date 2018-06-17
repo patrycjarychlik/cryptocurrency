@@ -23,11 +23,6 @@ public class UserController {
         session.invalidate();
     }
 
-    @PostMapping(path = "/register")
-    public void AddUser(User user){
-        //TODO
-    }
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public User getUser() {

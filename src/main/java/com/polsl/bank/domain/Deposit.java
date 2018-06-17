@@ -8,14 +8,15 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Date;
 
 
+@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table
 public class Deposit implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,16 +25,17 @@ public class Deposit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private BigDecimal value;
+    private Double value;
 
     private Integer percent;
 
-    private LocalDate dueDate;
+    private Date dueDate;
 
     private Boolean autoRenewal;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private Duration deposit;
+    private int duration;
+
+    @ManyToOne
+    private User user;
 
 }

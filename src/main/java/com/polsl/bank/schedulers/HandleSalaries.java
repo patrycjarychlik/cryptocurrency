@@ -2,16 +2,16 @@ package com.polsl.bank.schedulers;
 
 import com.polsl.bank.domain.service.AccountService;
 import com.polsl.bank.repository.AccountRepository;
+import javassist.NotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PayFromEmployer {
+public class HandleSalaries {
 
-    private static final Logger log = Logger.getLogger(PayFromEmployer.class);
-    private static final int MIN_20 = 1200000;
+    private static final Logger log = Logger.getLogger(HandleSalaries.class);
     public static final int SALARY = 200;
 
     @Autowired
@@ -20,10 +20,14 @@ public class PayFromEmployer {
     @Autowired
     private AccountRepository accountRepository;
 
-    @Scheduled(fixedRate = MIN_20)
-    public void reportCurrentTime() {
+    @Scheduled(fixedRate = TimeSchedule.MINUTES_20)
+    public void handleSalaries() {
         accountRepository.findAll().stream().forEach(account -> {
-            accountService.increaseBalance(account.getId(), SALARY);
+            try {
+                accountService.increaseBalance(account.getId(), SALARY);
+            } catch (NotFoundException e) {
+                log.error("Cannot pay salary", e);
+            }
         });
     }
 }

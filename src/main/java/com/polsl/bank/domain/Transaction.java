@@ -1,15 +1,16 @@
 package com.polsl.bank.domain;
 
 
-import com.polsl.bank.domain.enumeration.TransType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -17,7 +18,6 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,16 +26,11 @@ public class Transaction implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String transid;
+    private String transId;
 
     private LocalDate date;
 
-    private BigDecimal debit;
-
-    private BigDecimal credit;
-
-    @Enumerated(EnumType.STRING)
-    private TransType type;
+    private Double amount;
 
     private String source;
 

@@ -26,7 +26,7 @@ public class User {
 
     private String password;
 
-    private String passwordConfirm;
+    private String email;
 
     private String firstName;
 

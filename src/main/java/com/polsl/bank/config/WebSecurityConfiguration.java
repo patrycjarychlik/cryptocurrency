@@ -37,7 +37,6 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
                     throw new UsernameNotFoundException("could not find the user '" + username + "'");
                 }
             }
-
         };
     }
 }

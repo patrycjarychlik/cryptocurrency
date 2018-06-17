@@ -6,19 +6,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Date;
 
-
+@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table
 public class Credit implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,13 +24,15 @@ public class Credit implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private BigDecimal value;
+    private Double value;
 
-    private BigDecimal interests;
+    private Double due;
 
-    private LocalDate dueDate;
+    private Date dueDate;
 
     private Integer percent;
+
+    private boolean paid;
 
     @ManyToOne
     private User user;
